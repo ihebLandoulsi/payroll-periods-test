@@ -7,6 +7,7 @@ describe('PeriodeMensuelleController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PeriodeMensuelleController],
+      providers: [],
     }).compile();
 
     controller = module.get<PeriodeMensuelleController>(PeriodeMensuelleController);

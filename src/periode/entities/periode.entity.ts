@@ -1,5 +1,5 @@
 import { Column } from 'typeorm';
-import { BaseEntity } from '../../generic/BaseEntity';
+import { BaseEntity } from '../../utils/generic/BaseEntity';
 
 export abstract class Periode extends BaseEntity {
   @Column()
