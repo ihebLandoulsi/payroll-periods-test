@@ -55,10 +55,10 @@ export class PeriodeCongesService extends PeriodeService {
    * @param periodeConges the PeriodeConges we want to verify
    */
   shouldPeriodeCongesBepartitioned(periodeConges: PeriodeConges): boolean {
-    const month = periodeConges.startDate.getMonth();
-    const year = periodeConges.startDate.getFullYear();
+    const month = periodeConges.startDate.getUTCMonth();
+    const year = periodeConges.startDate.getUTCFullYear();
     let periodeMensuelle = PeriodeMensuelle.fromYearMonth(year, month);
-    return this.checkPeriodeCongesInsideMensuelle(periodeConges, periodeMensuelle);
+    return !this.checkPeriodeCongesInsideMensuelle(periodeConges, periodeMensuelle);
   }
 
   /**
@@ -69,8 +69,8 @@ export class PeriodeCongesService extends PeriodeService {
   generatePeriodeCongesPerMensuelle(
     periodeConges: PeriodeConges,
   ): PeriodeConges[] {
-    const month = periodeConges.startDate.getMonth();
-    const year = periodeConges.startDate.getFullYear();
+    const month = periodeConges.startDate.getUTCMonth();
+    const year = periodeConges.startDate.getUTCFullYear();
     const listPeriodeConges = [];
     let periodeMensuelle = PeriodeMensuelle.fromYearMonth(year, month);
     let currentPeriode = periodeConges;
@@ -80,14 +80,15 @@ export class PeriodeCongesService extends PeriodeService {
     ) {
       let generatedPerideConges = new PeriodeConges();
       const startDate = currentPeriode.startDate;
-      generatedPerideConges.startDate = startDate;
+      generatedPerideConges.startDate = new Date(startDate.valueOf());
       generatedPerideConges.endDate = CustomDateOperations.lastDayOfThatMonth(
         startDate,
       );
+      listPeriodeConges.push(generatedPerideConges);
       periodeMensuelle = periodeMensuelle.nextPeriodeMensuelle();
       currentPeriode.startDate = periodeMensuelle.startDate;
     }
-
+    listPeriodeConges.push(currentPeriode);
     return listPeriodeConges;
   }
 }

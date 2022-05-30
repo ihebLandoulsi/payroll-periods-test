@@ -46,8 +46,7 @@ export class PeriodeMensuelleController {
     const year = periodeMensuelleDto.year;
     const month = periodeMensuelleDto.month;
     const startDate = new Date(
-      periodeMensuelleDto.year,
-      periodeMensuelleDto.month,
+      Date.UTC(periodeMensuelleDto.year, periodeMensuelleDto.month),
     );
     return {
       startDate: startDate,

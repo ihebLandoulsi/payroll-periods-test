@@ -1,17 +1,16 @@
 /**
- * A Custom class used for redundent operations with Date
+ * A Custom class used for Date
  */
 export class CustomDateOperations {
-  
   /**
    * returns the date that represents first day at 00:00 of the month
-   *  of the date passed in paramater 
+   *  of the date passed in paramater
    * @param date the date used to generate the result
    */
   static firstDayOfThatMonth(date: Date): Date {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDayDate = new Date(year, month);
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+    const firstDayDate = new Date(Date.UTC(year, month, 1, 0, 0, 0));
     return firstDayDate;
   }
 
@@ -21,9 +20,9 @@ export class CustomDateOperations {
    * @param date the date used to generate the result
    */
   static lastDayOfThatMonth(date: Date): Date {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const lastDayDate = new Date(new Date(year, month + 1).getTime() - 1);
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+    const lastDayDate = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
     return lastDayDate;
   }
 

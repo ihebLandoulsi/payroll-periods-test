@@ -86,7 +86,7 @@ describe('PeriodeCongesService', () => {
     const month = 4;
     beforeEach(() => {
       periodeMensuelle = new PeriodeMensuelle();
-      periodeMensuelle.startDate = new Date(year, month);
+      periodeMensuelle.startDate = new Date(Date.UTC(year, month));
       periodeMensuelle.endDate = CustomDateOperations.lastDayOfThatMonth(
         periodeMensuelle.startDate,
       );
@@ -94,8 +94,8 @@ describe('PeriodeCongesService', () => {
     });
     describe('and periodeConges is not entirely inside periode mensuelle', () => {
       it('should return true', () => {
-        periodeConges.startDate = new Date(year, month, 12);
-        periodeConges.endDate = new Date(year, month + 2, 5);
+        periodeConges.startDate = new Date(Date.UTC(year, month, 12));
+        periodeConges.endDate = new Date(Date.UTC(year, month + 2, 5));
         expect(
           service.checkPeriodeCongesInsideMensuelle(
             periodeConges,
@@ -106,8 +106,8 @@ describe('PeriodeCongesService', () => {
     });
     describe('and periodeConges is entirely inside periode mensuelle', () => {
       it('should return false', () => {
-        periodeConges.startDate = new Date(year, month, 12);
-        periodeConges.endDate = new Date(year, month, 16);
+        periodeConges.startDate = new Date(Date.UTC(year, month, 12));
+        periodeConges.endDate = new Date(Date.UTC(year, month, 16));
         expect(
           service.checkPeriodeCongesInsideMensuelle(
             periodeConges,
@@ -122,7 +122,7 @@ describe('PeriodeCongesService', () => {
     const periodeConges = new PeriodeConges();
     periodeConges.startDate = new Date();
     periodeConges.endDate = new Date(
-      new Date().setMonth(new Date().getMonth() + 2),
+      new Date().setUTCMonth(new Date().getUTCMonth() + 2),
     );
     const generatedPeriodes =
       service.generatePeriodeCongesPerMensuelle(periodeConges);
