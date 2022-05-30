@@ -12,7 +12,9 @@ class PeriodeCongesMockRepository {
     return new PeriodeConges();
   }
 
-  save(periode: PeriodeConges | PeriodeConges[]): Promise<PeriodeConges | PeriodeConges[]> {
+  save(
+    periode: PeriodeConges | PeriodeConges[],
+  ): Promise<PeriodeConges | PeriodeConges[]> {
     return Promise.resolve(periode);
   }
 
@@ -26,7 +28,7 @@ class PeriodeCongesMockRepository {
     return Promise.resolve(periode);
   }
 
-  remove({ id }): Promise<PeriodeConges> {
+  softRemove({ id }): Promise<PeriodeConges> {
     const periode = new PeriodeConges();
     periode.id = id;
     return Promise.resolve(periode);
@@ -42,7 +44,7 @@ describe('PeriodeCongesService', () => {
         PeriodeCongesService,
         {
           provide: getRepositoryToken(PeriodeConges),
-          useClass: PeriodeCongesMockRepository,
+          useValue: new PeriodeCongesMockRepository(),
         },
       ],
     }).compile();
@@ -59,9 +61,9 @@ describe('PeriodeCongesService', () => {
 
   it('should call bulk method with expected params', () => {
     const bulkSpy = jest.spyOn(service, 'bulk');
-    const dto = new CreatePeriodeDto();
-    service.create(dto);
-    expect(bulkSpy).toHaveBeenCalledWith(dto);
+    const list = [new PeriodeConges()];
+    service.bulk(list);
+    expect(bulkSpy).toHaveBeenCalledWith(list);
   });
 
   it('should call update method with expected params', () => {
@@ -69,7 +71,7 @@ describe('PeriodeCongesService', () => {
     const dto = new UpdatePeriodeDto();
     const id = 'periodeCongesID';
     service.update(id, dto);
-    expect(updateSpy).toHaveBeenCalledWith(dto);
+    expect(updateSpy).toHaveBeenCalledWith(id,dto);
   });
 
   it('should call remove method with expected params', () => {

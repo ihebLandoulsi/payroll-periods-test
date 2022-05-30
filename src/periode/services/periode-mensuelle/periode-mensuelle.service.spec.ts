@@ -24,7 +24,7 @@ class PeriodeMensuelleMockRepository {
     return Promise.resolve(periode);
   }
 
-  remove({ id }): Promise<PeriodeMensuelle> {
+  softRemove({ id }): Promise<PeriodeMensuelle> {
     const periode = new PeriodeMensuelle();
     periode.id = id;
     return Promise.resolve(periode);
@@ -60,7 +60,7 @@ describe('MensuellePeriodeService', () => {
     const dto = new UpdatePeriodeDto();
     const id = 'PeriodeMensuelleID';
     service.update(id, dto);
-    expect(updateSpy).toHaveBeenCalledWith(dto);
+    expect(updateSpy).toHaveBeenCalledWith(id,dto);
   });
 
   it('should call remove method with expected params', () => {
