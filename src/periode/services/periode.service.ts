@@ -14,7 +14,7 @@ export abstract class PeriodeService {
     try {
       await this.repository.save(periode);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       throw new ConflictException('An erreur occured, try again later !');
     }
     return periode;
@@ -31,6 +31,13 @@ export abstract class PeriodeService {
   async update(id: string, updatePeriodeDto: UpdatePeriodeDto) {
     const periode = await this.repository.findOne({ id });
     if (!periode) throw new ConflictException(' Periode not found: wrong ID !');
+    const startDate = updatePeriodeDto.startDate
+      ? updatePeriodeDto.startDate
+      : periode.startDate;
+    const endDate = updatePeriodeDto.endDate
+      ? updatePeriodeDto.endDate
+      : periode.endDate;
+    this.verifyDtoCoherency({ startDate, endDate });
     for (const k in updatePeriodeDto) {
       periode[k] = updatePeriodeDto[k];
     }
@@ -44,5 +51,15 @@ export abstract class PeriodeService {
 
   async remove(id: string) {
     return this.repository.softRemove({ id });
+  }
+
+  verifyDtoCoherency(createPeriodeDto: CreatePeriodeDto): boolean {
+    const startDate = createPeriodeDto.startDate;
+    const endDate = createPeriodeDto.endDate;
+    if (startDate > endDate)
+      throw new ConflictException(
+        'incoherent periode: startDate must be older than endDate !',
+      );
+    return true;
   }
 }

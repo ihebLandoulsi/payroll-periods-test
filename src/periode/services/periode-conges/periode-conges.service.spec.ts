@@ -12,7 +12,7 @@ class PeriodeCongesMockRepository {
     return new PeriodeConges();
   }
 
-  save(periode: PeriodeConges): Promise<PeriodeConges> {
+  save(periode: PeriodeConges | PeriodeConges[]): Promise<PeriodeConges | PeriodeConges[]> {
     return Promise.resolve(periode);
   }
 
@@ -55,6 +55,13 @@ describe('PeriodeCongesService', () => {
     const dto = new CreatePeriodeDto();
     service.create(dto);
     expect(createSpy).toHaveBeenCalledWith(dto);
+  });
+
+  it('should call bulk method with expected params', () => {
+    const bulkSpy = jest.spyOn(service, 'bulk');
+    const dto = new CreatePeriodeDto();
+    service.create(dto);
+    expect(bulkSpy).toHaveBeenCalledWith(dto);
   });
 
   it('should call update method with expected params', () => {
@@ -118,7 +125,7 @@ describe('PeriodeCongesService', () => {
       new Date().setMonth(new Date().getMonth() + 2),
     );
     const generatedPeriodes =
-      service.generateCongesPeriodePerMensuelle(periodeConges);
+      service.generatePeriodeCongesPerMensuelle(periodeConges);
     expect(Array.isArray(generatedPeriodes)).toBe(true);
     expect(generatedPeriodes).toHaveLength(3);
   });
