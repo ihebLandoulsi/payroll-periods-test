@@ -2,16 +2,16 @@
 
 ## Table of Contents
 
-- [ About the Project ](#about)
-  - [ Presentation](#intro)
+- [About the Project](#about)
+  - [Presentation](#intro)
   - [Description Periodes](#descrip)
-- [ Project Architecture](#struct)
+- [Project Architecture](#struct)
   - [Directory Structure](#dir)
   - [Models ](#model)
   - [Controllers](#co)
   - [ Services](#s)
-- [ Installation ](#inst)
-- [ Execution ](#exec)
+- [Installation](#inst)
+- [Execution](#exec)
   - [Running the App](#run)
   - [Testing](#test)
 
@@ -19,7 +19,7 @@
 
 ## <a name="about"></a> About The Project
 
-### <a name="intro"></a>Description
+### <a name="intro"></a>Presentation
 
 This project serves as a very slim backend designed to manage the creation of pay periods and its different types.
 The project uses [Nestjs](https://github.com/nestjs/nest) Framework and is written in **Typescript**. The tests are implemented using the Testing Framework [Jest](https://jestjs.io/fr/).  
@@ -34,7 +34,7 @@ This project also provides an Api Interface using [Swagger](https://swagger.io).
   (Example of the Interface)
 </p>
 
-###  <a name="intro"></a>Description Periodes
+###  <a name="descrip"></a>Description Periodes
 In payroll, we work with **periods**.  Periods are characterized essentially by two things: 
 * a start date : represents the beginning of the period
 * an end date : represents the end
@@ -42,7 +42,7 @@ In payroll, we work with **periods**.  Periods are characterized essentially by 
 There are different types of periods. The most common one is the **monthly period** .It starts on the first day of the month at midnight (included) and ends on the first day of the following month at midnight (excluded).
 Other periods exist in the payroll business, for example periods of absence such as vacations. To facilitate management of periods, vacations must be divided according to monthly periods.
 
-## <a name="about"></a> Structure
+## <a name="struct"></a> Project Architecture
 
 The project is divided into modules. In this project we have two modules:
 
