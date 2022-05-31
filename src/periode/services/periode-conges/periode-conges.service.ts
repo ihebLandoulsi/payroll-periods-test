@@ -16,19 +16,27 @@ export class PeriodeCongesService extends PeriodeService {
     super(repository);
   }
   
-  async bulk(listPeriodesDto: CreatePeriodeDto[]| PeriodeConges[]) {
-    const listPeriodes = []
+  /**
+   * Save a list of PeriodeConges in the Database.
+   * @param listPeriodesDto the list of periodes to be saved in Database.
+   */
+  async bulk(listPeriodesDto: CreatePeriodeDto[] | PeriodeConges[]) {
+    const listPeriodes = [];
+
+    //fill the list of Periodes with generated attributes such as id and createdAt...
     listPeriodesDto.forEach(createPeriodeDto => {
       const periode = this.repository.create({
         ...createPeriodeDto,
       });
       listPeriodes.push(periode);
     });
+
+    //save in database
     try {
       await this.repository.save(listPeriodes);
     } catch (e) {
       console.log(e);
-      throw new ConflictException('An erreur occured, try again later !');
+      throw new ConflictException('An erreur occured during the connection with database.');
     }
     return listPeriodes;
   }
@@ -69,26 +77,43 @@ export class PeriodeCongesService extends PeriodeService {
   generatePeriodeCongesPerMensuelle(
     periodeConges: PeriodeConges,
   ): PeriodeConges[] {
+    // generating a PeriodeMensuelle that represents the month of the startDate of PeriodeConges
     const month = periodeConges.startDate.getUTCMonth();
     const year = periodeConges.startDate.getUTCFullYear();
-    const listPeriodeConges = [];
-    let periodeMensuelle = PeriodeMensuelle.fromYearMonth(year, month);
-    let currentPeriode = periodeConges;
+    let currentPeriodeMensuelle = PeriodeMensuelle.fromYearMonth(year, month);
+
     // partitioning the PeriodeConges into multiple PeriodeConges per PeriodeMensuelle
+    const listPeriodeConges = [];
+    let currentPeriode = periodeConges;
     while (
-      !this.checkPeriodeCongesInsideMensuelle(currentPeriode, periodeMensuelle)
+      !this.checkPeriodeCongesInsideMensuelle(currentPeriode, currentPeriodeMensuelle)
     ) {
-      let generatedPerideConges = new PeriodeConges();
-      const startDate = currentPeriode.startDate;
-      generatedPerideConges.startDate = new Date(startDate.valueOf());
-      generatedPerideConges.endDate = CustomDateOperations.lastDayOfThatMonth(
-        startDate,
-      );
-      listPeriodeConges.push(generatedPerideConges);
-      periodeMensuelle = periodeMensuelle.nextPeriodeMensuelle();
-      currentPeriode.startDate = periodeMensuelle.startDate;
+      const generatedPeriodeConges = this.generatePeriodeCongesByPeriodeMensuelle(currentPeriode,currentPeriodeMensuelle);
+      listPeriodeConges.push(generatedPeriodeConges);
+      // iterate to nextPeriodeMensuelle and remove the periode that is represented
+      //  by the generatedPeriodeConges 
+      currentPeriodeMensuelle = currentPeriodeMensuelle.nextPeriodeMensuelle();
+      currentPeriode.startDate = currentPeriodeMensuelle.startDate;
     }
     listPeriodeConges.push(currentPeriode);
     return listPeriodeConges;
+  }
+
+  /**
+   * generate a PeriodeConges that that represents the periode 
+   * of the PeriodeConges passed as argument that is fully included 
+   * inside periodeMensuelle 
+   * @param initialPeriodeConges A periodeConges partially included in
+   *  PeriodeMensuelle 
+   * @param periodeMensuelle A periodeMensuelle that represents the month
+   *  of initialPeriodeConges.startDate
+   */
+  generatePeriodeCongesByPeriodeMensuelle(initialPeriodeConges: PeriodeConges, periodeMensuelle: PeriodeMensuelle): PeriodeConges {
+    const generatedPerideConges = new PeriodeConges();
+    const startDate = initialPeriodeConges.startDate;
+
+    generatedPerideConges.startDate = new Date(startDate.valueOf());
+    generatedPerideConges.endDate = periodeMensuelle.endDate;
+    return generatedPerideConges;
   }
 }
